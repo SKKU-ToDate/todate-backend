@@ -24,6 +24,15 @@ public class Course {
     @Column(nullable = false)
     private LocalDate date;
 
-    @Column(nullable = false)
+    @Column(name="is_history", nullable = false)
     private boolean isHistory = false;
+
+    protected Course(){
+        
+    }
+    public Course(String name, LocalDate date, boolean isHistory){
+        this.name = name;
+        this.date = date;
+        this.isHistory = isHistory;
+    }
 }
