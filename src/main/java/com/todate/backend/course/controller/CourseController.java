@@ -18,7 +18,7 @@ import com.todate.backend.course.service.CourseService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/course")
+@RequestMapping("/course")
 @RequiredArgsConstructor
 public class CourseController {
 
@@ -32,7 +32,7 @@ public class CourseController {
         String tokenUsername = userDetails.getUsername();
 
         Long courseId = courseService.CreateCourse(tokenUsername);
-        URI location = URI.create("/api/v1/course/" + courseId);
+        URI location = URI.create("course/" + courseId);
         return ResponseEntity.created(location).build();
     }
 
