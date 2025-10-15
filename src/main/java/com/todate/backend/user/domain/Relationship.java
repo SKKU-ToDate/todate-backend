@@ -6,11 +6,21 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Getter @Setter
+@Table(
+    name = "relationships",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = "partner_1"),
+        @UniqueConstraint(columnNames = "partner_2")
+    }
+)
+@Getter
+@Setter
 public class Relationship {
 
     @Id
@@ -19,6 +29,7 @@ public class Relationship {
 
     @OneToOne
     @JoinColumn(name = "partner_1", nullable = false)
+
     private User partner1;
 
     @OneToOne

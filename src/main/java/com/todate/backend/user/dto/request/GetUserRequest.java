@@ -8,12 +8,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PatchUserRequest {
+public class GetUserRequest {
 
     @NotBlank(message = "아이디를 입력해주세요.")
     private String userId;
-
-    private String name;
-
-    private String partner;
 }
