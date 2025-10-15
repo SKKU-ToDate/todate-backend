@@ -24,6 +24,11 @@ spring:
       secret: coolscretcoolscretcoolscretcoolscretcoolscret
       access-valid: 1d
       refresh-valid: 1d
+server:
+  error:
+    include-stacktrace: never
 logging:
   level:
-    org.hibernate.sql: debug
+    org:
+      hibernate:
+        sql: debug

@@ -17,16 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpRequest signUpRequest){
+    public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
         authService.signupUser(signUpRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AccessTokenResponse> signIn(@Valid @RequestBody SignInRequest signInRequest){
+    public ResponseEntity<AccessTokenResponse> signIn(
+        @Valid @RequestBody SignInRequest signInRequest) {
         AccessTokenResponse accessTokenResponse = authService.login(signInRequest);
         return ResponseEntity.ok(accessTokenResponse);
     }

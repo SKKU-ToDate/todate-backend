@@ -27,11 +27,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableConfigurationProperties(JwtProps.class)
 @RequiredArgsConstructor
 public class SecurityConfig {
+
     private final Environment env;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http, BasicAuthenticationProvider basicAuthenticationProvider) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http,
+        BasicAuthenticationProvider basicAuthenticationProvider) throws Exception {
         if (env.acceptsProfiles(Profiles.of("local"))) {
             // local h2-console 인증 제외 및 iframe 허용
             http.headers(h -> h.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
@@ -45,43 +47,44 @@ public class SecurityConfig {
         }
 
         http
-                // jwt 사용하므로 csrf 토큰 필요없음
-                .csrf(AbstractHttpConfigurer::disable)
-                // 내장 서버 세션 필요 없음
-                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // 기본 로그인 폼 필요 없음
-                .formLogin(AbstractHttpConfigurer::disable)
-                // Basic 인증 끄기
-                .httpBasic(AbstractHttpConfigurer::disable)
-                // 요청 endpoint 별 인증 설정
-                .authorizeHttpRequests(auth -> auth
-                        // 인증 제외할 endpoint 명시
-                        .requestMatchers("/auth/**").permitAll()
-                        // 이외 request는 모두 인증
-                        .anyRequest().authenticated()
-                )
-                .authenticationProvider(basicAuthenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                // 에러 핸들링
-                .exceptionHandling(ex -> ex
-                        // 인증 실패 401
-                        .authenticationEntryPoint((req, res, e) -> {
-                            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                            res.setContentType("application/json");
-                            res.getWriter().write("{\"message\":\"Unauthorized\"}");
-                        })
+            // jwt 사용하므로 csrf 토큰 필요없음
+            .csrf(AbstractHttpConfigurer::disable)
+            // 내장 서버 세션 필요 없음
+            .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            // 기본 로그인 폼 필요 없음
+            .formLogin(AbstractHttpConfigurer::disable)
+            // Basic 인증 끄기
+            .httpBasic(AbstractHttpConfigurer::disable)
+            // 요청 endpoint 별 인증 설정
+            .authorizeHttpRequests(auth -> auth
+                // 인증 제외할 endpoint 명시
+                .requestMatchers("/auth/**", "/error").permitAll()
+                // 이외 request는 모두 인증
+                .anyRequest().authenticated()
+            )
+            .authenticationProvider(basicAuthenticationProvider)
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            // 에러 핸들링
+            .exceptionHandling(ex -> ex
+                    // 인증 실패 401
+                    .authenticationEntryPoint((req, res, e) -> {
+                        res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        res.setContentType("application/json");
+                        res.getWriter().write("{\"message\":\"Unauthorized\"}");
+                    })
 //                        // 인가 실패 403 (아직 필요 없음)
 //                        .accessDeniedHandler((req, res, e) -> {
 //                            res.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403
 //                            res.setContentType("application/json");
 //                            res.getWriter().write("{\"message\":\"Forbidden\"}");
 //                        })
-                );
+            );
         return http.build();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(BasicAuthenticationProvider basicAuthenticationProvider) {
+    public AuthenticationManager authenticationManager(
+        BasicAuthenticationProvider basicAuthenticationProvider) {
         return new ProviderManager(basicAuthenticationProvider);
     }
 
