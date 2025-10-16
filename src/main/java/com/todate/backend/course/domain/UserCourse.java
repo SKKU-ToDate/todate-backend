@@ -21,10 +21,19 @@ public class UserCourse {
 
     @ManyToOne
     @JoinColumn(name="user_id",nullable = false)
-    private User userId;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
-    private Course courseId;
+    private Course course;
+
+    protected UserCourse(){
+
+    }
+
+    public UserCourse(User user, Course course){
+        this.user = user;
+        this.course = course;
+    }
 
 }
