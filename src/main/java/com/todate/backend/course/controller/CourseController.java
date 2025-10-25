@@ -37,7 +37,7 @@ public class CourseController {
     }
 
     //데이트 코스 조회
-    @GetMapping("/{username}")
+    @GetMapping
     public ResponseEntity<CourseResponse> getCourses(
             @AuthenticationPrincipal UserDetails userDetails){
         
