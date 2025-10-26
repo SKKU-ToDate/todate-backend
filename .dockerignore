@@ -2,7 +2,6 @@
 ```
 .git
 .gradle
-build
 *.md
 .gitignore
 .github
