@@ -1,0 +1,35 @@
+
+server:
+  port: 8080
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  application:
+    name: todate-backend
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+  auth:
+    jwt:
+      # JwtProps.java의 'secret' 필드
+      secret: ${JWT_SECRET}
+      
+      access-valid: ${JWT_ACCESS_VALIDITY} 
+    
+      refresh-valid: ${JWT_REFRESH_VALIDITY}
+
+logging:
+  level:
+    root: INFO

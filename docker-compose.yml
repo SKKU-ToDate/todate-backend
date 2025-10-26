@@ -1,0 +1,15 @@
+services:
+  backend:
+    image: 0cracker/todate-backend:latest
+    container_name: todate-backend
+    ports:
+      - "8080:8080"
+    environment:
+      #Spring Boot가 application-prod.yml을 읽도록 프로필 활성화
+      - SPRING_PROFILES_ACTIVE=prod
+    
+    # .env 파일에 있는 모든 변수를 이 컨테이너의 환경 변수로 주입
+    env_file:
+      - ./.env
+      
+    restart: always

@@ -1,0 +1,13 @@
+### **.dockerignore 생성**
+```
+.git
+.gradle
+*.md
+.gitignore
+.github
+.idea
+*.log
+.local
+gradle/wrapper
+gradlew
+gradlew.bat

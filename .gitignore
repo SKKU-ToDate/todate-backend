@@ -38,3 +38,7 @@ out/
 
 ### H2DB ###
 *.db
+.local/
+
+### Docker data ###
+data/
