@@ -1,4 +1,4 @@
-FROM openjdk:17-slim
+FROM eclipse-temurin:21-jre-jammy
 
 # 타임존 설정
 ENV TZ=Asia/Seoul
@@ -16,5 +16,5 @@ COPY ./build/libs/*.jar app.jar
 # 포트 노출
 EXPOSE 8080
 
-# 실행 (prod 프로파일 사용)
+# 실행
 ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=prod", "app.jar"]
