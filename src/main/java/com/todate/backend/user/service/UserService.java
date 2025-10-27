@@ -30,7 +30,7 @@ public class UserService {
 
     public UserResponse getUser(String userId) {
         User user = findUser(userId);
-        long numOfCourses = userCourseRepository.countByUserId(user);
+        long numOfCourses = userCourseRepository.countByUser(user);
         String partner = relationshipRepository.findByPartner1UsernameOrPartner2Username(userId,
                 userId)
             .map(relationship -> extractPartnerUsername(relationship, userId))
