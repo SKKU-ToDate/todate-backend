@@ -14,5 +14,5 @@ public interface UserCourseRepository extends JpaRepository<UserCourse, Long>{
 
     Optional<UserCourse> findByUserAndCourse(User user, Course course);
 
-    long countByUserId(User user);
+    long countByUser(User user);
 }
