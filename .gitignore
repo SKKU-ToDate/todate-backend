@@ -42,3 +42,6 @@ out/
 
 ### Docker data ###
 data/
+
+### ENV ###
+**/*.env.*
