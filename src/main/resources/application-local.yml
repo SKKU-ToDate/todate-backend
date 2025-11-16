@@ -24,6 +24,9 @@ spring:
       secret: coolscretcoolscretcoolscretcoolscretcoolscret
       access-valid: 1d
       refresh-valid: 1d
+google:
+  oauth2:
+    client-id: ${GOOGLE_CLIENT_ID}
 server:
   error:
     include-stacktrace: never

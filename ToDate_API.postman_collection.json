@@ -1,0 +1,270 @@
+{
+  "info": {
+    "name": "ToDate Backend API",
+    "description": "ToDate 백엔드 API 컬렉션 (OAuth2 Google 로그인)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "todate"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Google Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// 성공 시 access_token을 환경 변수에 자동 저장",
+                  "if (pm.response.code === 200) {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.environment.set('access_token', jsonData.access_token);",
+                  "    pm.environment.set('refresh_token', jsonData.refresh_token);",
+                  "    console.log('✅ Access Token saved:', jsonData.access_token.substring(0, 20) + '...');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idToken\": \"여기에_Google_ID_Token_붙여넣기\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/google",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "google"
+              ]
+            },
+            "description": "**Google OAuth2 로그인**\n\n1. Google ID Token을 받아서 검증\n2. 사용자 조회 or 자동 회원가입\n3. 자체 JWT 발급 (access + refresh)\n\n**Google ID Token 발급 방법:**\n- OAuth 2.0 Playground: https://developers.google.com/oauthplayground\n- Flutter 앱에서 직접 로그 출력"
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"idToken\": \"eyJhbGciOiJSUzI1NiIsImtpZCI6IjFlOWdkazcifQ...\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/auth/google",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "google"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n  \"refresh_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n  \"token_type\": \"Bearer\",\n  \"expires_in\": 86400\n}"
+            },
+            {
+              "name": "Invalid Token",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"idToken\": \"invalid.token.here\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/auth/google",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "google"
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"timestamp\": \"2025-11-15T10:30:00.000+00:00\",\n  \"status\": 401,\n  \"error\": \"Unauthorized\",\n  \"message\": \"Invalid Google ID token: Security error verifying token\",\n  \"path\": \"/auth/google\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Get User Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/user",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user"
+              ]
+            },
+            "description": "**현재 로그인한 사용자 정보 조회**\n\n인증 필요: Bearer Token (자동 적용)\n\n응답:\n- username: 이메일\n- name: 이름\n- courseCount: 코스 개수\n- partnerUsername: 파트너 이메일\n- partnerName: 파트너 이름"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Course",
+      "item": [
+        {
+          "name": "Create Course",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/course",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "course"
+              ]
+            },
+            "description": "**새 코스 생성**\n\n인증 필요: Bearer Token\n\nBody: 없음 (자동 생성)\n- name: 현재 날짜 기반\n- date: 오늘 날짜\n- isHistory: false"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Courses by Username",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/course/:username",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "course",
+                ":username"
+              ],
+              "variable": [
+                {
+                  "key": "username",
+                  "value": "user@gmail.com",
+                  "description": "조회할 사용자 이메일"
+                }
+              ]
+            },
+            "description": "**특정 사용자의 코스 목록 조회**\n\n인증 필요: Bearer Token\n\nPath Parameter:\n- username: 사용자 이메일"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Course",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/course/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "course",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "삭제할 코스 ID"
+                }
+              ]
+            },
+            "description": "**코스 삭제 (소유자만 가능)**\n\n인증 필요: Bearer Token\n\nPath Parameter:\n- id: 코스 ID"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refresh_token",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

@@ -45,3 +45,6 @@ data/
 
 ### ENV ###
 **/*.env.*
+
+### claude ###
+docs/_build

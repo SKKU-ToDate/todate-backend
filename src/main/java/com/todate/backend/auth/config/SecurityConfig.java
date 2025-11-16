@@ -1,6 +1,5 @@
 package com.todate.backend.auth.config;
 
-import com.todate.backend.auth.core.BasicAuthenticationProvider;
 import com.todate.backend.auth.jwt.JwtAuthenticationFilter;
 import com.todate.backend.auth.jwt.JwtProps;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,18 +9,25 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Spring Security 설정 - Google OAuth2 전용
+ *
+ * 인증 방식:
+ * - /auth/google: 인증 불필요 (Google ID Token 검증)
+ * - 나머지: JWT 인증 필요 (JwtAuthenticationFilter)
+ *
+ * 제거됨:
+ * - AuthenticationManager, PasswordEncoder (로컬 로그인 제거)
+ * - BasicAuthenticationProvider (더 이상 필요 없음)
+ */
 @Configuration
 @EnableWebSecurity
 @EnableConfigurationProperties(JwtProps.class)
@@ -32,8 +38,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http,
-        BasicAuthenticationProvider basicAuthenticationProvider) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         if (env.acceptsProfiles(Profiles.of("local"))) {
             // local h2-console 인증 제외 및 iframe 허용
             http.headers(h -> h.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
@@ -62,7 +67,6 @@ public class SecurityConfig {
                 // 이외 request는 모두 인증
                 .anyRequest().authenticated()
             )
-            .authenticationProvider(basicAuthenticationProvider)
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             // 에러 핸들링
             .exceptionHandling(ex -> ex
@@ -72,24 +76,7 @@ public class SecurityConfig {
                         res.setContentType("application/json");
                         res.getWriter().write("{\"message\":\"Unauthorized\"}");
                     })
-//                        // 인가 실패 403 (아직 필요 없음)
-//                        .accessDeniedHandler((req, res, e) -> {
-//                            res.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403
-//                            res.setContentType("application/json");
-//                            res.getWriter().write("{\"message\":\"Forbidden\"}");
-//                        })
             );
         return http.build();
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(
-        BasicAuthenticationProvider basicAuthenticationProvider) {
-        return new ProviderManager(basicAuthenticationProvider);
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }
