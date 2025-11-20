@@ -25,21 +25,29 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class User implements UserDetails {
 
     @Id
-    private String username;
-
-    @Column(nullable = false)
-    private String password;
+    private String username;  // Google email
 
     @Column(nullable = false)
     private String name;
 
-    public static User create(String userId, String encodedPassword, String name) {
-        return User.builder().username(userId).password(encodedPassword).name(name).build();
+    @Column(name = "google_id", nullable = false, unique = true)
+    private String googleId;  // Google's 'sub' claim
+
+    public static User createFromGoogle(String email, String googleId, String name) {
+        return User.builder()
+                .username(email)
+                .googleId(googleId)
+                .name(name)
+                .build();
+    }
+
+    @Override
+    public String getPassword() {
+        return null;  // No password for OAuth users
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-
         return Collections.emptyList();
     }
 }

@@ -42,3 +42,9 @@ out/
 
 ### Docker data ###
 data/
+
+### ENV ###
+**/*.env.*
+
+### claude ###
+docs/_build

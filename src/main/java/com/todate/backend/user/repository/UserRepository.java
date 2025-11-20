@@ -9,4 +9,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, String>{
     Boolean existsUserByUsername(String username);
     Optional<User> findByUsername(String username);
+
+    // Google OAuth2 사용자 조회
+    Optional<User> findByGoogleId(String googleId);
 }

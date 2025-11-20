@@ -7,11 +7,9 @@ import com.todate.backend.user.dto.request.PatchUserRequest;
 import com.todate.backend.user.dto.response.UserResponse;
 import com.todate.backend.user.repository.RelationshipRepository;
 import com.todate.backend.user.repository.UserRepository;
-import com.todate.backend.user.service.policy.PasswordPolicy;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -25,8 +23,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final RelationshipRepository relationshipRepository;
     private final UserCourseRepository userCourseRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final PasswordPolicy passwordPolicy;
 
     public UserResponse getUser(String userId) {
         User user = findUser(userId);
@@ -37,16 +33,6 @@ public class UserService {
             .orElse(null);
 
         return UserResponse.of(user.getName(), partner, numOfCourses);
-    }
-
-    @Transactional
-    public void changePassword(String userId, String newPassword) {
-        if (!passwordPolicy.validate(newPassword)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호 정책을 만족하지 않습니다.");
-        }
-
-        User user = findUser(userId);
-        user.setPassword(passwordEncoder.encode(newPassword));
     }
 
     @Transactional
