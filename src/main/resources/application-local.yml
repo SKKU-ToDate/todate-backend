@@ -3,10 +3,10 @@ spring:
     activate:
       on-profile: local
   datasource:
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-    url: jdbc:h2:file:./.local/h2/devdb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: jdbc:postgresql://postgres:5432/${DB_NAME}
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -14,16 +14,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.H2Dialect
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   auth:
     jwt:
-      secret: coolscretcoolscretcoolscretcoolscretcoolscret
-      access-valid: 1d
-      refresh-valid: 1d
+      secret: ${JWT_SECRET}
+      access-valid: ${JWT_ACCESS_VALIDITY}
+      refresh-valid: ${JWT_REFRESH_VALIDITY}
 google:
   oauth2:
     client-id: ${GOOGLE_CLIENT_ID}

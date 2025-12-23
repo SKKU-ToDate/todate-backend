@@ -1,0 +1,6 @@
+# 운영 환경용 설정 (AWS EC2)
+# 사용법: docker compose -f docker-compose.yml -f docker-compose.prod.yml up
+
+services:
+  backend:
+    image: ${DOCKERHUB_USERNAME}/todate-backend:latest

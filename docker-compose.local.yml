@@ -1,0 +1,12 @@
+# 로컬 개발 환경용 설정
+# 사용법: docker compose -f docker-compose.yml -f docker-compose.local.yml up
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: todate-backend:local
+    pull_policy: never
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
