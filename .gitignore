@@ -44,7 +44,10 @@ out/
 data/
 
 ### ENV ###
-**/*.env.*
+.env
 
 ### claude ###
 docs/_build
+**REPORT.md
+**PLAN.md
+**REVIEW.md

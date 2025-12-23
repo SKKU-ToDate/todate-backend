@@ -1,15 +1,54 @@
 services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: todate-postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+  redis:
+    image: redis:7-alpine
+    container_name: todate-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+
   backend:
-    image: 0cracker/todate-backend:latest
     container_name: todate-backend
     ports:
       - "8080:8080"
     environment:
-      #Spring Boot가 application-prod.yml을 읽도록 프로필 활성화
       - SPRING_PROFILES_ACTIVE=prod
-    
-    # .env 파일에 있는 모든 변수를 이 컨테이너의 환경 변수로 주입
+      - DB_URL=jdbc:postgresql://postgres:5432/${DB_NAME}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     env_file:
       - ./.env
-      
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     restart: always
+
+volumes:
+  postgres-data:
+  redis-data:
