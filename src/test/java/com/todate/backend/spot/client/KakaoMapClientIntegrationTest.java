@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.todate.backend.spot.dto.KaKaoSearchResponseDto;
+import com.todate.backend.spot.dto.response.KaKaoSearchResponseDto;
 
 import org.springframework.beans.factory.annotation.Value;
 

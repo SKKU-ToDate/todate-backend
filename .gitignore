@@ -43,7 +43,6 @@ out/
 ### Docker data ###
 data/
 
-<<<<<<< HEAD
 ### ENV ###
 .env
 
@@ -52,7 +51,3 @@ docs/_build
 **REPORT.md
 **PLAN.md
 **REVIEW.md
-=======
-### Secrets ###
-.env
->>>>>>> ac551d4 ([feat] Kakao map api 클라이언트 파일 작성)

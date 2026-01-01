@@ -1,4 +1,4 @@
-package com.todate.backend.spot.dto;
+package com.todate.backend.spot.dto.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +8,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class SpotRequestDto {
+
     private String keyword;
+
     private String rect;
 }

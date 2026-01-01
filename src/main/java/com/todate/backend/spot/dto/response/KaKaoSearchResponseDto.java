@@ -1,4 +1,4 @@
-package com.todate.backend.spot.dto;
+package com.todate.backend.spot.dto.response;
 
 import java.util.List;
 

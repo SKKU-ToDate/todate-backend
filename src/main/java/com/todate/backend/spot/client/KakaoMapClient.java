@@ -1,6 +1,6 @@
 package com.todate.backend.spot.client;
 
-import com.todate.backend.spot.dto.KaKaoSearchResponseDto;
+import com.todate.backend.spot.dto.response.KaKaoSearchResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

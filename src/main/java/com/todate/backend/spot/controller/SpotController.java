@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.todate.backend.spot.dto.KaKaoSearchResponseDto.Document;
-import com.todate.backend.spot.dto.SpotRequestDto;
+import com.todate.backend.spot.dto.request.SpotRequestDto;
+import com.todate.backend.spot.dto.response.KaKaoSearchResponseDto.Document;
 import com.todate.backend.spot.service.SpotService;
 
 import lombok.RequiredArgsConstructor;

@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.todate.backend.spot.client.KakaoMapClient;
-import com.todate.backend.spot.dto.KaKaoSearchResponseDto;
-import com.todate.backend.spot.dto.KaKaoSearchResponseDto.Document;
-import com.todate.backend.spot.dto.SpotRequestDto;
+import com.todate.backend.spot.dto.request.SpotRequestDto;
+import com.todate.backend.spot.dto.response.KaKaoSearchResponseDto;
+import com.todate.backend.spot.dto.response.KaKaoSearchResponseDto.Document;
 
 import lombok.RequiredArgsConstructor;
 
