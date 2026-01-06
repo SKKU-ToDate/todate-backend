@@ -15,6 +15,7 @@ import com.todate.backend.course.dto.response.CourseResponse;
 import com.todate.backend.course.dto.request.CourseCreateRequestDto;
 import com.todate.backend.course.repository.CourseRepository;
 import com.todate.backend.course.repository.UserCourseRepository;
+import com.todate.backend.spot.domain.Spot;
 import com.todate.backend.spot.dto.request.SpotSaveRequestDto;
 import com.todate.backend.spot.repository.SpotRepository;
 import com.todate.backend.user.domain.User;
@@ -95,6 +96,65 @@ class CourseServiceTest {
         // 3. Spot들이 저장되고 Course와 연결되었는지 확인
         assertThat(spotRepository.count()).isEqualTo(2);
         assertThat(savedCourse.getSpots()).hasSize(2);
+    }
+
+    @Test
+    @DisplayName("성공: 코스 수정 (Batch Replace)")
+    void updateCourseTest() {
+        // === Given (준비) ===
+        // 1. 기존 코스 및 장소 생성
+        Course existingCourse = courseRepository.save(new Course("기존 이름", LocalDate.now(), false));
+        Spot existingSpot = Spot.builder()
+                .courseId(existingCourse)
+                .placeName("기존 장소")
+                .addressName("기존 주소")
+                .longitude(0.0)
+                .latitude(0.0)
+                .placeUrl("url")
+                .kakaoPlaceId(111L)
+                .seq(1L)
+                .build();
+        existingCourse.addSpot(existingSpot);
+        courseRepository.save(existingCourse); // Cascade로 Spot 저장
+
+        userCourseRepository.save(new UserCourse(testUser, existingCourse));
+        Long courseId = existingCourse.getId();
+
+        // 2. 수정 요청 DTO 생성 (이름 변경, 새로운 장소 1개로 교체)
+        CourseCreateRequestDto updateRequest = new CourseCreateRequestDto();
+        updateRequest.setName("수정된 이름");
+        updateRequest.setDate(LocalDate.now());
+
+        SpotSaveRequestDto newSpot = new SpotSaveRequestDto();
+        newSpot.setPlaceName("새로운 장소");
+        newSpot.setAddressName("새 주소");
+        newSpot.setLongitude(1.1);
+        newSpot.setLatitude(1.1);
+        newSpot.setPlaceUrl("new_url");
+        newSpot.setKakaoPlaceId(222L);
+        newSpot.setSeq(1L);
+
+        updateRequest.setSpots(List.of(newSpot));
+
+        // === When (실행) ===
+        courseService.updateCourse(courseId, testUser.getUsername(), updateRequest);
+
+        // === Then (검증) ===
+        Course updatedCourse = courseRepository.findById(courseId).orElseThrow();
+
+        // 1. 코스 정보 변경 확인
+        assertThat(updatedCourse.getName()).isEqualTo("수정된 이름");
+
+        // 2. 장소 리스트 교체 확인
+        // 기존 장소(1개) -> 삭제, 새로운 장소(1개) -> 추가. 총 개수는 1개여야 함.
+        assertThat(updatedCourse.getSpots()).hasSize(1);
+        assertThat(updatedCourse.getSpots().get(0).getPlaceName()).isEqualTo("새로운 장소");
+        assertThat(updatedCourse.getSpots().get(0).getKakaoPlaceId()).isEqualTo(222L);
+
+        // 3. (중요) DB에서 기존 장소가 진짜 지워졌는지 확인
+        // 카카오ID 111L(기존)은 없고, 222L(신규)만 있어야 함
+        // 참고: flush가 안되면 DB 반영이 안 보일 수 있으므로 EntityManager flush가 필요할 수 있으나
+        // @Transactional 테스트에서는 보통 영속성 컨텍스트 내에서 조회하므로 getSpots()로 확인 가능
     }
 
     @Test

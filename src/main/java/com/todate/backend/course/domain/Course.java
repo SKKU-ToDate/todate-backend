@@ -52,4 +52,9 @@ public class Course {
         this.spots.add(spot);
         spot.setCourseId(this);
     }
+
+    public void update(String name, LocalDate date) {
+        this.name = name;
+        this.date = date;
+    }
 }

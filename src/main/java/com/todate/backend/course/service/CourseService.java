@@ -68,6 +68,44 @@ public class CourseService {
                 return newCourse.getId();
         }
 
+        // 데이트 코스 수정 (Batch Replace)
+        @Transactional
+        public void updateCourse(Long courseId, String userName, CourseCreateRequestDto request) {
+                User user = userRepository.findById(userName)
+                                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다: " + userName));
+
+                Course course = courseRepository.findById(courseId)
+                                .orElseThrow(() -> new IllegalArgumentException("코스를 찾을 수 없습니다."));
+
+                // 권한 확인 (UserCourse 테이블 조회)
+                userCourseRepository.findByUserAndCourse(user, course)
+                                .orElseThrow(() -> new IllegalArgumentException("해당 코스를 수정할 권한이 없습니다."));
+
+                // 1. 코스 정보 업데이트
+                course.update(request.getName(), request.getDate());
+
+                // 2. 기존 장소 모두 제거 (OrphanRemoval로 의해 DB에서도 삭제됨)
+                course.getSpots().clear();
+
+                // 3. 새로운 장소 리스트 추가
+                if (request.getSpots() != null) {
+                        for (SpotSaveRequestDto spotDto : request.getSpots()) {
+                                Spot spot = Spot.builder()
+                                                .placeName(spotDto.getPlaceName())
+                                                .addressName(spotDto.getAddressName())
+                                                .longitude(spotDto.getLongitude())
+                                                .latitude(spotDto.getLatitude())
+                                                .placeUrl(spotDto.getPlaceUrl())
+                                                .kakaoPlaceId(spotDto.getKakaoPlaceId())
+                                                .seq(spotDto.getSeq())
+                                                .courseId(course) // 연결
+                                                .build();
+                                course.addSpot(spot);
+                        }
+                }
+                // 트랜잭션 종료 시 더티 체킹으로 자동 저장
+        }
+
         // 데이트 코스 전체 조회
         @Transactional(readOnly = true)
         public CourseResponse findAllCourses(String userName) {

@@ -21,25 +21,19 @@ public class KakaoMapClient {
     // 카카오 로컬 API: 키워드로 장소 검색
     public KaKaoSearchResponseDto searchByKeyword(String keyword, String rect) {
 
-        // 1. URI 생성 및 인코딩 (RFC 3986 표준 준수)
-        // 기술적 이유: 한글 검색어는 URL에 그대로 들어갈 수 없으므로 UTF-8 인코딩이 필수입니다.
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString("/v2/local/search/keyword.json")
-                .queryParam("query", keyword);
-
-        if (rect != null && !rect.isEmpty()) {
-            builder.queryParam("rect", rect);
-        }
-
-        URI uri = builder.build()
-                .encode(StandardCharsets.UTF_8)
-                .toUri();
-
-        log.info("[KakaoMapClient] Request URI: {}", uri);
+        log.info("[KakaoMapClient] Request Keyword: {}, Rect: {}", keyword, rect);
 
         try {
             // 2. HTTP GET 요청 수행
             return kakaoWebClient.get()
-                    .uri(uri)
+                    .uri(uriBuilder -> {
+                        uriBuilder.path("/v2/local/search/keyword.json")
+                                .queryParam("query", keyword);
+                        if (rect != null && !rect.isEmpty()) {
+                            uriBuilder.queryParam("rect", rect);
+                        }
+                        return uriBuilder.build();
+                    })
                     .retrieve() // 응답 본문을 추출하기 위한 상태(Status) 및 헤더 검사 시작
                     .onStatus(status -> status.is4xxClientError() || status.is5xxServerError(),
                             clientResponse -> clientResponse.bodyToMono(String.class)
