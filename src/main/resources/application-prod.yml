@@ -38,6 +38,11 @@ google:
   oauth2:
     client-id: ${GOOGLE_CLIENT_ID}
 
+kakao:
+  api:
+    key: ${KAKAO_API_KEY}
+    base-url: https://dapi.kakao.com
+
 logging:
   level:
     root: INFO
