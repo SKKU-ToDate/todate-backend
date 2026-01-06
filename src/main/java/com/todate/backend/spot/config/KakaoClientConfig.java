@@ -1,4 +1,4 @@
-package com.todate.backend.config;
+package com.todate.backend.spot.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

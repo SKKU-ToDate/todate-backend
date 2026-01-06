@@ -1,4 +1,4 @@
-package com.todate.backend.spot.dto;
+package com.todate.backend.spot.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -10,16 +10,16 @@ import lombok.Getter;
 public class SpotResponseDto {
     @JsonProperty("place_name")
     private String placeName;
-    
+
     private Double x;
-    
+
     private Double y;
-    
+
     @JsonProperty("address_name")
     private String addressName;
 
     @JsonProperty("place_url")
-    private String placeUrl;  
+    private String placeUrl;
 
     private String phone;
 
