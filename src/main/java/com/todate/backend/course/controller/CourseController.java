@@ -9,13 +9,16 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.todate.backend.course.dto.request.CourseCreateRequestDto;
 import com.todate.backend.course.dto.response.CourseResponse;
 import com.todate.backend.course.service.CourseService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/course")
@@ -24,23 +27,37 @@ public class CourseController {
 
     private final CourseService courseService;
 
-    //데이트 코스 생성
+    // 데이트 코스 생성
     @PostMapping
     public ResponseEntity<Void> createCourse(
-            @AuthenticationPrincipal UserDetails userDetails){
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody CourseCreateRequestDto request) {
 
         String tokenUsername = userDetails.getUsername();
 
-        Long courseId = courseService.CreateCourse(tokenUsername);
+        Long courseId = courseService.createCourse(tokenUsername, request);
         URI location = URI.create("course/" + courseId);
         return ResponseEntity.created(location).build();
     }
 
-    //데이트 코스 조회
+    // 데이트 코스 수정
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateCourse(
+            @PathVariable("id") Long courseId,
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody CourseCreateRequestDto request) {
+
+        String tokenUsername = userDetails.getUsername();
+        courseService.updateCourse(courseId, tokenUsername, request);
+
+        return ResponseEntity.ok().build();
+    }
+
+    // 데이트 코스 조회
     @GetMapping
     public ResponseEntity<CourseResponse> getCourses(
-            @AuthenticationPrincipal UserDetails userDetails){
-        
+            @AuthenticationPrincipal UserDetails userDetails) {
+
         String tokenUsername = userDetails.getUsername();
 
         CourseResponse response = courseService.findAllCourses(tokenUsername);
@@ -48,12 +65,12 @@ public class CourseController {
 
     }
 
-    //데이트 코스 삭제
+    // 데이트 코스 삭제
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCourse(
             @PathVariable("id") Long courseId,
-            @AuthenticationPrincipal UserDetails userDetails){
-        
+            @AuthenticationPrincipal UserDetails userDetails) {
+
         String tokenUserId = userDetails.getUsername();
         courseService.DeleteCourse(courseId, tokenUserId);
         return ResponseEntity.noContent().build();

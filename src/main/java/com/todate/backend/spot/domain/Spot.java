@@ -13,7 +13,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Getter @Setter
+@Getter
+@Setter
 public class Spot {
 
     @Id
@@ -21,10 +22,44 @@ public class Spot {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="course_id", nullable = false)
+    @JoinColumn(name = "course_id", nullable = false)
     private Course courseId;
 
     @Column(nullable = false)
     private Long seq;
+
+    @Column(nullable = false)
+    private String placeName;
+
+    @Column(nullable = false)
+    private String addressName;
+
+    @Column(nullable = false)
+    private Double longitude;
+
+    @Column(nullable = false)
+    private Double latitude;
+
+    @Column(nullable = false)
+    private String placeUrl;
+
+    @Column(nullable = false)
+    private Long kakaoPlaceId;
+
+    protected Spot() {
+    }
+
+    @lombok.Builder
+    public Spot(Course courseId, Long seq, String placeName, String addressName, Double longitude, Double latitude,
+            String placeUrl, Long kakaoPlaceId) {
+        this.courseId = courseId;
+        this.seq = seq;
+        this.placeName = placeName;
+        this.addressName = addressName;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.placeUrl = placeUrl;
+        this.kakaoPlaceId = kakaoPlaceId;
+    }
 
 }

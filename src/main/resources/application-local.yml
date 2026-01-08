@@ -6,7 +6,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-    url: jdbc:postgresql://postgres:5432/${DB_NAME}
+    url: jdbc:postgresql://localhost:5432/${DB_NAME}
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -31,3 +31,8 @@ logging:
     org:
       hibernate:
         sql: debug
+
+kakao:
+  api:
+    key: ${KAKAO_API_KEY}
+    base-url: https://dapi.kakao.com
