@@ -22,7 +22,7 @@ spring:
       refresh-valid: ${JWT_REFRESH_VALIDITY}
 google:
   oauth2:
-    client-id: ${GOOGLE_CLIENT_ID}
+    client-ids: ${GOOGLE_CLIENT_IDS}
 server:
   error:
     include-stacktrace: never

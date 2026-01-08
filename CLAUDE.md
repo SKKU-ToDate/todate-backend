@@ -72,13 +72,18 @@ DTOs: Separate request/response packages per domain
 The codebase is organized into four main domains under `com.todate.backend`:
 
 **1. Auth Domain** (`auth/`)
-- JWT-based authentication system
+- JWT-based authentication system with Google OAuth2 support
 - Key classes:
   - `JwtUtil`: Token generation/validation
   - `JwtAuthenticationFilter`: Request filter for JWT validation
   - `SecurityConfig`: Security filter chain configuration
   - `AuthService`: Login/signup logic
-- Endpoints: `/auth/register`, `/auth/login` (no authentication required)
+  - `GoogleTokenVerifier`: Google ID Token verification (supports multiple Client IDs for Android/iOS)
+  - `GoogleOAuth2Props`: Configuration for Google OAuth Client IDs
+- Authentication methods:
+  - Google OAuth2: ID Token verification with multi-platform support (Android/iOS)
+  - Auto-registration on first Google login
+- Endpoints: `/auth/google/login` (no authentication required)
 
 **2. User Domain** (`user/`)
 - User management and couple relationships
@@ -146,6 +151,7 @@ Required in `.env` file or environment:
 - `JWT_SECRET`: JWT signing key (must be >=32 bytes)
 - `JWT_ACCESS_VALIDITY`: Access token duration (e.g., "1d")
 - `JWT_REFRESH_VALIDITY`: Refresh token duration (e.g., "1d")
+- `GOOGLE_CLIENT_IDS`: Comma-separated Google OAuth Client IDs for Android/iOS (e.g., "android-id,ios-id")
 - `MAIL_ID`: Email service ID (future use)
 - `MAIL_PASSWORD`: Email service password (future use)
 
