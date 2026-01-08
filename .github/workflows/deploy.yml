@@ -82,6 +82,9 @@ jobs:
           # Google OAuth
           GOOGLE_CLIENT_IDS=${{ secrets.GOOGLE_CLIENT_IDS }}
           
+          # Kakao API
+          KAKAO_API_KEY=${{ secrets.KAKAO_API_KEY }}
+          
           # Redis
           REDIS_HOST=redis
           REDIS_PORT=6379
