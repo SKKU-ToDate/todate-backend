@@ -80,7 +80,7 @@ jobs:
           JWT_REFRESH_VALIDITY=${{ secrets.JWT_REFRESH_VALIDITY }}
           
           # Google OAuth
-          GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_IDS=${{ secrets.GOOGLE_CLIENT_IDS }}
           
           # Redis
           REDIS_HOST=redis

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Collections;
 
 /**
  * Google ID Token 검증 클래스
@@ -33,8 +32,8 @@ public class GoogleTokenVerifier {
             new NetHttpTransport(),
             new GsonFactory()
         )
-        // aud (Audience) 검증: 우리 앱의 Client ID인지 확인
-        .setAudience(Collections.singletonList(props.clientId()))
+        // aud (Audience) 검증: Android/iOS 등 여러 플랫폼의 Client ID 중 하나와 일치하는지 확인
+        .setAudience(props.clientIds())
         // iss (Issuer) 검증: Google이 발급했는지 확인 (자동)
         .build();
     }
