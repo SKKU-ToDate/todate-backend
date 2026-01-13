@@ -20,24 +20,34 @@ public class AccessTokenResponse {
     @JsonProperty("expires_in")
     private final long expiresInSeconds;
 
+    @JsonProperty("username")
+    private final String username;
+
+    @JsonProperty("name")
+    private final String name;
+
     // For backward compatibility (single access token)
-    public static AccessTokenResponse of(String accessToken, Duration ttl) {
+    public static AccessTokenResponse of(String accessToken, Duration ttl, String username, String name) {
         long expiresIn = ttl != null ? ttl.toSeconds() : 0L;
         return AccessTokenResponse.builder()
                 .accessToken(accessToken)
                 .tokenType("Bearer")
                 .expiresInSeconds(expiresIn)
+                .username(username)
+                .name(name)
                 .build();
     }
 
     // For Google OAuth2 (access + refresh tokens)
-    public static AccessTokenResponse of(String accessToken, String refreshToken, Duration ttl) {
+    public static AccessTokenResponse of(String accessToken, String refreshToken, Duration ttl, String username, String name) {
         long expiresIn = ttl != null ? ttl.toSeconds() : 0L;
         return AccessTokenResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .tokenType("Bearer")
                 .expiresInSeconds(expiresIn)
+                .username(username)
+                .name(name)
                 .build();
     }
 }
